@@ -5457,13 +5457,9 @@ public class DefaultCodegen implements CodegenConfig {
 
         // handle default value for enum, e.g. available => StatusEnum.AVAILABLE
         if (var.defaultValue != null) {
+            final String enumDefaultValue = getEnumDefaultValue(var.defaultValue, dataType);
+
             String enumName = null;
-            final String enumDefaultValue;
-            if (isDataTypeString(dataType)) {
-                enumDefaultValue = toEnumValue(var.defaultValue, dataType);
-            } else {
-                enumDefaultValue = var.defaultValue;
-            }
             for (Map<String, Object> enumVar : enumVars) {
                 if (enumDefaultValue.equals(enumVar.get("value"))) {
                     enumName = (String) enumVar.get("name");
@@ -5474,6 +5470,16 @@ public class DefaultCodegen implements CodegenConfig {
                 var.defaultValue = toEnumDefaultValue(enumName, var.datatypeWithEnum);
             }
         }
+    }
+
+    protected String getEnumDefaultValue(String defaultValue, String dataType) {
+        final String enumDefaultValue;
+        if (isDataTypeString(dataType)) {
+            enumDefaultValue = toEnumValue(defaultValue, dataType);
+        } else {
+            enumDefaultValue = defaultValue;
+        }
+        return enumDefaultValue;
     }
 
     protected List<Map<String, Object>> buildEnumVars(List<Object> values, String dataType) {
